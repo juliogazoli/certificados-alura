@@ -2,7 +2,6 @@ import os
 import re
 import asyncio
 from getpass import getpass
-from decouple import config
 from playwright.async_api import async_playwright
 from tqdm import tqdm
 

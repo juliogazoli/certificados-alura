@@ -13,8 +13,16 @@ CONCURRENCY = 5
 
 def extrair_nome(url):
     nome = url.split("/course/")[1].split("/formalCertificate")[0]
-    nome = nome.replace("/", "-")
-    nome = re.sub(r"[^\w\s-]", "", nome)
+
+    # troca hífen por espaço
+    nome = nome.replace("-", " ")
+
+    # remove caracteres indesejados
+    nome = re.sub(r"[^\w\s]", "", nome)
+
+    # remove espaços duplicados (opcional, mas bom)
+    nome = re.sub(r"\s+", " ", nome).strip()
+
     return nome
 
 

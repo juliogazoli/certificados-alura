@@ -1,9 +1,11 @@
 import os
 import re
 import asyncio
+from getpass import getpass
 from decouple import config
 from playwright.async_api import async_playwright
 from tqdm import tqdm
+
 
 DOWNLOAD_DIR = "certificados"
 BASE_URL = "https://cursos.alura.com.br"
@@ -46,6 +48,11 @@ async def baixar_certificado(context, url, sem, pbar):
 async def run():
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
+    # entrada do usuário
+    email = input("Digite seu e-mail: ")
+    senha = getpass("Digite sua senha: ")
+    usuario_alura = input("Digite seu usuário da Alura (verificar a URL do perfil): ")
+
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         context = await browser.new_context()
@@ -53,12 +60,12 @@ async def run():
 
         # login
         await page.goto("https://cursos.alura.com.br/loginForm")
-        await page.fill('input[name="username"]', config("EMAIL"))
-        await page.fill('input[name="password"]', config("SENHA"))
+        await page.fill('input[name="username"]', email)
+        await page.fill('input[name="password"]', senha)
         await page.click('button:has-text("Entrar")')
 
         # perfil
-        await page.goto(f"https://cursos.alura.com.br/user/{config('USUARIO_ALURA')}")
+        await page.goto(f"https://cursos.alura.com.br/user/{usuario_alura}")
 
         await page.get_by_role("button", name="ver todos os cursos concluí").click()
         await page.wait_for_load_state("networkidle")
